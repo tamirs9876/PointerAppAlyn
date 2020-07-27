@@ -1,12 +1,4 @@
-﻿// Simple Player sample application
-// AForge.NET framework
-// http://www.aforgenet.com/framework/
-//
-// Copyright © AForge.NET, 2006-2011
-// contacts@aforgenet.com
-//
-
-using System;
+﻿using System;
 using System.Windows.Forms;
 
 namespace Alyn.Pointer.App
@@ -14,7 +6,7 @@ namespace Alyn.Pointer.App
     public partial class SettingsForm : Form
     {
         private readonly Action<double> updateDelay;
-        // Class constructor
+        
         public SettingsForm(Action<double> updateDelay)
         {
             InitializeComponent();

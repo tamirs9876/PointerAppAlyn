@@ -32,7 +32,6 @@ namespace Alyn.Pointer.App
         public MainForm()
         {
             InitializeComponent();
-
             detector = new Detector();
         }
 
