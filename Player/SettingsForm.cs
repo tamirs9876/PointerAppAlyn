@@ -13,12 +13,12 @@ namespace UI
 {
     public partial class SettingsForm : Form
     {
-        private Action<double> updateDelay;
+        private readonly Action<double> updateDelay;
         // Class constructor
-        public SettingsForm(Action<double> i_UpdateDelay)
+        public SettingsForm(Action<double> updateDelay)
         {
             InitializeComponent();
-            updateDelay = i_UpdateDelay;
+            this.updateDelay = updateDelay;
         }
 
         private void InitializeComponent()

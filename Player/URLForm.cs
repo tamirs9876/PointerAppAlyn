@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace UI
 {
-    public partial class URLForm : Form
+    public partial class UrlForm : Form
     {
         private string url;
 
@@ -21,7 +21,7 @@ namespace UI
         }
 
         // URLs to display in combo box
-        public string[] URLs
+        public string[] Urls
         {
             set
             {
@@ -37,7 +37,7 @@ namespace UI
         }
 
         // Constructor
-        public URLForm( )
+        public UrlForm( )
         {
             InitializeComponent( );
         }

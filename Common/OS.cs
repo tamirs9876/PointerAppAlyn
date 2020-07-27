@@ -18,16 +18,16 @@ namespace Common
         }
 
 
-        public static float getScalingFactor(IntPtr hwnd)
+        public static float GetScalingFactor(IntPtr hwnd)
         {
             var g = System.Drawing.Graphics.FromHwnd(hwnd);
             var desktop = g.GetHdc();
-            var LogicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
-            var PhysicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
+            var logicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
+            var physicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
 
-            var ScreenScalingFactor = (float)PhysicalScreenHeight / (float)LogicalScreenHeight;
+            var screenScalingFactor = (float)physicalScreenHeight / (float)logicalScreenHeight;
 
-            return ScreenScalingFactor; // 1.25 = 125%
+            return screenScalingFactor; // 1.25 = 125%
         }
 
         public static Size GetNativeResolution(IntPtr? hwnd = null)

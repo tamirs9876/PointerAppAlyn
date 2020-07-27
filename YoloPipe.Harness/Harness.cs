@@ -15,14 +15,14 @@ namespace YoloPipe.Harness
         //    Console.ReadLine();
         //}
 
-        public static async Task TestYoloJsonPipe(double i_X, double i_Y)
+        public static async Task TestYoloJsonPipe(double x, double y)
         {
             var anacondaDir = ConfigurationManager.AppSettings["AnacondaDirectory"]; // @"C:\Users\username\AppData\Local";
             var solutionDir = ConfigurationManager.AppSettings["SolutionDirectory"]; // @"C:\Users\username\source\repos\";
             var speechLanguage = ConfigurationManager.AppSettings["Language"];
             var exe = "cmd.exe";
             var dir = String.Format(@"{0}\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\", solutionDir);
-            var args = String.Format(@"/c {0}\Continuum\anaconda3\Scripts\activate.bat {0}\Continuum\anaconda3 & {0}\Continuum\anaconda3\python.exe -u {1}\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\yolo.py -i {1}\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\temp\image.jpeg -ln {4} -x {2} -y {3}", anacondaDir, solutionDir, i_X, i_Y, speechLanguage);
+            var args = String.Format(@"/c {0}\Continuum\anaconda3\Scripts\activate.bat {0}\Continuum\anaconda3 & {0}\Continuum\anaconda3\python.exe -u {1}\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\yolo.py -i {1}\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\temp\image.jpeg -ln {4} -x {2} -y {3}", anacondaDir, solutionDir, x, y, speechLanguage);
             var pipe = new YoloJsonPipe("cmd.exe", args, dir);
 
             pipe.Start();

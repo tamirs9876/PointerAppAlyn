@@ -6,7 +6,7 @@ namespace YoloPipe
 {
     public class YoloJsonPipe
     {
-        private YoloPipe _pipe;
+        private readonly YoloPipe _pipe;
         private EventHandler<DataReadyEventArgs> JsonReady;
         public YoloJsonPipe(string exe, string arguments, string workingFolder)
         {

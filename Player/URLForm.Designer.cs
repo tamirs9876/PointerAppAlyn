@@ -1,6 +1,6 @@
 ﻿namespace UI
 {
-    partial class URLForm
+    partial class UrlForm
     {
         /// <summary>
         /// Required designer variable.
@@ -84,7 +84,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "URLForm";
+            this.Name = "UrlForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Open URL";

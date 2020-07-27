@@ -4,7 +4,7 @@ namespace TobiiAgent
 {
     public interface IAgentAnalyzer
     {
-        void UpdateDelayThreshold(double i_Delay);
-        void StartWatching(Action<double, double> i_RecognizeMethod);
+        void UpdateDelayThreshold(double delay);
+        void StartWatching(Action<double, double> recognizeMethod);
     }
 }

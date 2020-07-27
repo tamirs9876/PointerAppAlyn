@@ -6,9 +6,9 @@ namespace Manager
 {
     class Manager
     {
-        private TobiiAgentAnalyzer m_Agent = new TobiiAgent.TobiiAgentAnalyzer();
-        private ObjectDetector m_Detector;
-        private void TryAndRecognize(double i_PointX, double i_PointY)
+        private TobiiAgentAnalyzer agent = new TobiiAgent.TobiiAgentAnalyzer();
+        private ObjectDetector detector;
+        private void TryAndRecognize(double pointX, double pointY)
         {
             //TODO: Implement
             throw new Exception("Not implemented");

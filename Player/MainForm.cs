@@ -24,15 +24,15 @@ namespace UI
 {
     public partial class MainForm : Form
     {
-        private IAgentAnalyzer m_Agent;
-        private Stopwatch stopWatch = null;
-        ObjectDetector m_Detector;
+        private IAgentAnalyzer agent;
+        private Stopwatch stopWatch;
+        readonly ObjectDetector detector;
 
         // Class constructor//
         public MainForm()
         {
             InitializeComponent();
-            m_Detector = new ObjectDetector();
+            detector = new ObjectDetector();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -44,13 +44,13 @@ namespace UI
         {
             localVideoCaptureDeviceToolStripMenuItem_Start();
             var subject = new Subject<StreamData<GazePointData>>();
-            m_Agent = new TobiiAgentAnalyzer(subject);
+            agent = new TobiiAgentAnalyzer(subject);
             subject.Subscribe(value =>
             {
-                onDetection(value.Data.X, value.Data.Y);
+                OnDetection(value.Data.X, value.Data.Y);
             });
             //m_Agent = new MockAgentAnalyzer();
-            m_Agent.StartWatching(this.onDetection);
+            agent.StartWatching(this.OnDetection);
         }
 
         // "Exit" menu item clicked
@@ -92,7 +92,7 @@ namespace UI
             }
         }
 
-        internal void onDetection(double x, double y)
+        internal void OnDetection(double x, double y)
         {
             Action action = () =>
             {
@@ -102,8 +102,8 @@ namespace UI
                 var pt = this.videoSourcePlayer.PointToClient(gazeLocation);
                 var normalizeX = pt.X / (float)videoSourcePlayer.Width;
                 var normalizeY = pt.Y / (float)videoSourcePlayer.Height;
-                m_Detector.PointX = normalizeX;
-                m_Detector.PointY = normalizeY;
+                detector.PointX = normalizeX;
+                detector.PointY = normalizeY;
 
                 var focusedButton = this.DescendentsFromPoint(pt).OfType<Button>().LastOrDefault();
                 if (focusedButton != null)
@@ -132,30 +132,23 @@ namespace UI
             //tryToDetect(frame_MS);
         }
 
-        internal void saveImageLocally(MemoryStream ms)
+        internal void SaveImageLocally(MemoryStream ms)
         {
-            try
-            {
-                var path = string.Concat(ConfigurationManager.AppSettings["SolutionDirectory"], @"\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\temp\");
-                //var imageStream = Image.FromStream(ms);
-                //imageStream.Save(outStream, ImageFormat.Jpeg);
-                var imgSave = System.Drawing.Image.FromStream(ms);
-                var bmSave = new Bitmap(imgSave);
-                var bmTemp = new Bitmap(bmSave);
+            var path = string.Concat(ConfigurationManager.AppSettings["SolutionDirectory"], @"\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\temp\");
+            //var imageStream = Image.FromStream(ms);
+            //imageStream.Save(outStream, ImageFormat.Jpeg);
+            var imgSave = System.Drawing.Image.FromStream(ms);
+            var bmSave = new Bitmap(imgSave);
+            var bmTemp = new Bitmap(bmSave);
 
-                var grSave = Graphics.FromImage(bmTemp);
-                grSave.DrawImage(imgSave, 0, 0, imgSave.Width, imgSave.Height);
+            var grSave = Graphics.FromImage(bmTemp);
+            grSave.DrawImage(imgSave, 0, 0, imgSave.Width, imgSave.Height);
 
-                bmTemp.Save(path + "\\" + "image" + ".jpeg");
-                imgSave.Dispose();
-                bmSave.Dispose();
-                bmTemp.Dispose();
-                grSave.Dispose();
-            }
-            catch (Exception ex)
-            {
-
-            }
+            bmTemp.Save(path + "\\" + "image" + ".jpeg");
+            imgSave.Dispose();
+            bmSave.Dispose();
+            bmTemp.Dispose();
+            grSave.Dispose();
         }
 
         internal MemoryStream CaptureSnapshot()
@@ -173,14 +166,14 @@ namespace UI
             return null;
         }
 
-        internal void tryToDetect(MemoryStream i_MS)
+        internal void TryToDetect(MemoryStream stream)
         {
-            m_Detector.DetectFromImagePath();
+            detector.DetectFromImagePath();
             // m_Detector.Detect(i_MS);
         }
 
         // Open video file using DirectShow
-        private void openVideofileusingDirectShowToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenVideofileusingDirectShowToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -200,10 +193,10 @@ namespace UI
         // Open JPEG URL
         private void openJPEGURLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var form = new URLForm();
+            var form = new UrlForm();
 
             form.Description = "Enter URL of an updating JPEG from a web camera:";
-            form.URLs = new string[]
+            form.Urls = new string[]
                 {
                     "http://195.243.185.195/axis-cgi/jpg/image.cgi?camera=1",
                 };
@@ -221,10 +214,10 @@ namespace UI
         // Open MJPEG URL
         private void openMJPEGURLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var form = new URLForm();
+            var form = new UrlForm();
 
             form.Description = "Enter URL of an MJPEG video stream:";
-            form.URLs = new string[]
+            form.Urls = new string[]
                 {
                     "http://195.243.185.195/axis-cgi/mjpg/video.cgi?camera=4",
                     "http://195.243.185.195/axis-cgi/mjpg/video.cgi?camera=3",
@@ -355,7 +348,7 @@ namespace UI
 
         private void buttonSettings_Click(object sender, EventArgs e)
         {
-            var settings = new SettingsForm(m_Agent.UpdateDelayThreshold);
+            var settings = new SettingsForm(agent.UpdateDelayThreshold);
             settings.ShowDialog();
         }
     }

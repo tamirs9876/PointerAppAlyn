@@ -21,12 +21,12 @@ namespace UI
         {
             var g = Graphics.FromHwnd(hwnd);
             var desktop = g.GetHdc();
-            var LogicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
-            var PhysicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
+            var logicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
+            var physicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
 
-            var ScreenScalingFactor = (float)PhysicalScreenHeight / (float)LogicalScreenHeight;
+            var screenScalingFactor = (float)physicalScreenHeight / (float)logicalScreenHeight;
 
-            return ScreenScalingFactor; // 1.25 = 125%
+            return screenScalingFactor; // 1.25 = 125%
         }
     }
 }

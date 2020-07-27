@@ -6,7 +6,7 @@ namespace TobiiAgent
 {
     public class MockAgentAnalyzer : IAgentAnalyzer
     {
-        public async void StartWatching(Action<double, double> i_RecognizeMethod)
+        public async void StartWatching(Action<double, double> recognizeMethod)
         {
             var r = new Random();
             var size = OS.GetNativeResolution();
@@ -16,14 +16,14 @@ namespace TobiiAgent
                 {
                     var x = r.Next(0, size.Width);
                     var y = r.Next(0, size.Height);
-                    i_RecognizeMethod(x, y);
+                    recognizeMethod(x, y);
                 }
 
                 await Task.Delay(700);
             }
         }
 
-        public void UpdateDelayThreshold(double i_Delay)
+        public void UpdateDelayThreshold(double delay)
         {
             throw new NotImplementedException();
         }
