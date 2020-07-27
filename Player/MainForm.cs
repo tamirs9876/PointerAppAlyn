@@ -99,34 +99,38 @@ namespace UI
 
         internal void onDetection(double x, double y)
         {
-                Action action = () =>
+            Action action = () =>
+            {
+                double ratio = OS.GetScalingFactor(Handle);
+                Point gazeLocation = new Point((int)(x / ratio), (int)(y / ratio));
+
+                var pt = this.videoSourcePlayer.PointToClient(gazeLocation);
+                var normalizeX = pt.X / (float)videoSourcePlayer.Width;
+                var normalizeY = pt.Y / (float)videoSourcePlayer.Height;
+                m_Detector.PointX = normalizeX;
+                m_Detector.PointY = normalizeY;
+
+                Button focusedButton = this.DescendentsFromPoint(pt).OfType<Button>().LastOrDefault();
+                if (focusedButton != null)
                 {
-                    double ratio = OS.GetScalingFactor(Handle);
-                    Point gazeLocation = new Point((int)(x / ratio), (int)(y / ratio));
+                    this.txtStatus.Text = $"clicking {focusedButton.Text}";
+                    focusedButton.PerformClick();
+                }
+                if (Bounds.Contains(pt))
+                {
+                    panelDetectionFrame.Location = gazeLocation;
+                    panelDetectionFrame.Visible = true;
+                }
+                else
+                {
+                    panelDetectionFrame.Visible = false;
+                }
+            };
 
-                    var pt = this.videoSourcePlayer.PointToClient(gazeLocation);
-                    float normalizeX = pt.X / (float)videoSourcePlayer.Width;
-                    float normalizeY = pt.Y / (float)videoSourcePlayer.Height;
-                    m_Detector.PointX = normalizeX;
-                    m_Detector.PointY = normalizeY;
-
-                    Button focusedButton = this.DescendentsFromPoint(pt).OfType<Button>().LastOrDefault();
-                    if (focusedButton != null)
-                    {
-                        focusedButton.PerformClick();
-                    }
-                    if (Bounds.Contains(pt))
-                    {
-                        panelDetectionFrame.Location = gazeLocation;
-                        panelDetectionFrame.Visible = true;
-                    }
-                    else
-                    {
-                        panelDetectionFrame.Visible = false;
-                    }
-                };
-
-            this.Invoke(action);
+            if (!this.IsDisposed)
+            {
+                this.Invoke(action);
+            }
 
             //MemoryStream frame_MS = CaptureSnapshot();
             //saveImageLocally(frame_MS);
@@ -155,7 +159,7 @@ namespace UI
             }
             catch (Exception ex)
             {
-                
+
             }
         }
 

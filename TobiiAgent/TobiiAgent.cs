@@ -22,12 +22,12 @@ namespace TobiiAgent
             //m_FixationBeginWithoutEnd = false;
             m_SentForRecognition = false;
             this.m_host = new Host();
-            m_Stream = m_host.Streams.CreateFixationDataStream();
-            var gazeStream = m_host.Streams.CreateGazePointDataStream();
-            if (gazeObservable != null)
-            {
-                gazeStream.Subscribe(gazeObservable);
-            }
+            this.m_Stream = m_host.Streams.CreateFixationDataStream();
+            //var gazeStream = m_host.Streams.CreateGazePointDataStream();
+            //if (gazeObservable != null)
+            //{
+            //    gazeStream.Subscribe(gazeObservable);
+            //}
         }
 
         // This method registers the callbacks for fixation begin, during, and end.
@@ -38,9 +38,11 @@ namespace TobiiAgent
             // Because timestamp of fixation events is relative to the previous ones
             // only, we will store them in this variable.
             var fixationBeginTime = 0d;
+            var lastX = 0d;
+            var lasyY = 0d;
 
             // On fixation begin
-            m_Stream.Next += async (o, fixation) =>
+            m_Stream.Next += (o, fixation) =>
             {
                 // On the Next event, data comes as FixationData objects, wrapped in a StreamData<T> object.
                 var fixationPointX = fixation.Data.X;
@@ -51,13 +53,22 @@ namespace TobiiAgent
                     case FixationDataEventType.Begin:
                         //if (!m_FixationBeginWithoutEnd)
                         //{
-                        fixationBeginTime = fixation.Data.Timestamp;
+                        // reset the fixationBeginTime if the X,Y IoU is outside range
+                        var diffX = Math.Abs(lastX - fixation.Data.X);
+                        var diffY = Math.Abs(lasyY - fixation.Data.Y);
+                        if (diffX > 50 || diffY > 50)
+                        {
+                            fixationBeginTime = fixation.Data.Timestamp;
+                            lastX = fixation.Data.X;
+                            lasyY = fixation.Data.Y;
+                        }
                         //    m_FixationBeginWithoutEnd = true;
                         //}
                         break;
 
                     case FixationDataEventType.Data:
-                        if (!m_SentForRecognition && ((fixation.Data.Timestamp - fixationBeginTime) / 1000) >= m_FixationThreshold)
+                        var duration = (fixation.Data.Timestamp - fixationBeginTime) / 1000;
+                        if (!m_SentForRecognition && duration >= m_FixationThreshold)
                         {
                             //m_FixationBeginWithoutEnd = false;
                             this.m_host.DisableConnection();

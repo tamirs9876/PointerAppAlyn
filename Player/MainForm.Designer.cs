@@ -45,6 +45,7 @@ namespace UI
             this.buttonIWhatsThis = new System.Windows.Forms.Button();
             this.videoSourcePlayer = new AForge.Controls.VideoSourcePlayer();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.txtStatus = new System.Windows.Forms.TextBox();
             this.mainPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -77,6 +78,7 @@ namespace UI
             // 
             this.mainPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.mainPanel.BackColor = System.Drawing.SystemColors.Info;
+            this.mainPanel.Controls.Add(this.txtStatus);
             this.mainPanel.Controls.Add(this.panelDetectionFrame);
             this.mainPanel.Controls.Add(this.buttonSettings);
             this.mainPanel.Controls.Add(this.buttonStopTobii);
@@ -238,6 +240,13 @@ namespace UI
             this.openFileDialog.Filter = "AVI files (*.avi)|*.avi|All files (*.*)|*.*";
             this.openFileDialog.Title = "Opem movie";
             // 
+            // txtStatus
+            // 
+            this.txtStatus.Location = new System.Drawing.Point(687, 882);
+            this.txtStatus.Name = "txtStatus";
+            this.txtStatus.Size = new System.Drawing.Size(386, 26);
+            this.txtStatus.TabIndex = 11;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -276,5 +285,6 @@ namespace UI
         private System.Windows.Forms.Button buttonStopTobii;
         private System.Windows.Forms.Panel panelDetectionFrame;
         private System.Windows.Forms.Button buttonSettings;
+        private System.Windows.Forms.TextBox txtStatus;
     }
 }
