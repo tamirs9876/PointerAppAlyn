@@ -23,6 +23,7 @@ using System.IO;
 using Common;
 using System.Linq;
 using System.Configuration;
+using System.Reactive.Subjects;
 
 namespace UI
 {
@@ -47,8 +48,13 @@ namespace UI
         private void MainForm_Load(object sender, System.EventArgs e)
         {
             localVideoCaptureDeviceToolStripMenuItem_Start();
-            //m_Agent = new TobiiAgentAnalyzer(new Host());
-            m_Agent = new MockAgentAnalyzer();
+            Subject<StreamData<GazePointData>> subject = new Subject<StreamData<GazePointData>>();
+            m_Agent = new TobiiAgentAnalyzer(subject);
+            subject.Subscribe(value =>
+            {
+                onDetection(value.Data.X, value.Data.Y);
+            });
+            //m_Agent = new MockAgentAnalyzer();
             m_Agent.StartWatching(this.onDetection);
         }
 
@@ -122,8 +128,8 @@ namespace UI
 
             this.Invoke(action);
 
-            MemoryStream frame_MS = CaptureSnapshot();
-            saveImageLocally(frame_MS);
+            //MemoryStream frame_MS = CaptureSnapshot();
+            //saveImageLocally(frame_MS);
             //tryToDetect(frame_MS);
         }
 

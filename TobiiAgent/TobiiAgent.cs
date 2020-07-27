@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 using Tobii.Interaction;
@@ -15,12 +17,17 @@ namespace TobiiAgent
         //private bool m_FixationBeginWithoutEnd;
         private Host m_host;
         private FixationDataStream m_Stream;
-        public TobiiAgentAnalyzer(object host)
+        public TobiiAgentAnalyzer(IObserver<StreamData<GazePointData>> gazeObservable = null)
         {
             //m_FixationBeginWithoutEnd = false;
             m_SentForRecognition = false;
             this.m_host = new Host();
-            m_Stream = m_host.Streams.CreateFixationDataStream(FixationDataMode.Sensitive, true);
+            m_Stream = m_host.Streams.CreateFixationDataStream();
+            var gazeStream = m_host.Streams.CreateGazePointDataStream();
+            if (gazeObservable != null)
+            {
+                gazeStream.Subscribe(gazeObservable);
+            }
         }
 
         // This method registers the callbacks for fixation begin, during, and end.
