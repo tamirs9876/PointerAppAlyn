@@ -19,12 +19,12 @@ namespace UI
 
         public static float GetScalingFactor(IntPtr hwnd)
         {
-            Graphics g = Graphics.FromHwnd(hwnd);
-            IntPtr desktop = g.GetHdc();
-            int LogicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
-            int PhysicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
+            var g = Graphics.FromHwnd(hwnd);
+            var desktop = g.GetHdc();
+            var LogicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
+            var PhysicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
 
-            float ScreenScalingFactor = (float)PhysicalScreenHeight / (float)LogicalScreenHeight;
+            var ScreenScalingFactor = (float)PhysicalScreenHeight / (float)LogicalScreenHeight;
 
             return ScreenScalingFactor; // 1.25 = 125%
         }

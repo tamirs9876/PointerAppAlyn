@@ -21,7 +21,7 @@ namespace YoloPipe
 
         public async Task<string> ReadJsonObjextAsync()
         {
-            StringBuilder b = new StringBuilder();
+            var b = new StringBuilder();
             string line;
             do
             {

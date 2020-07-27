@@ -43,7 +43,7 @@ namespace UI
         private void MainForm_Load(object sender, System.EventArgs e)
         {
             localVideoCaptureDeviceToolStripMenuItem_Start();
-            Subject<StreamData<GazePointData>> subject = new Subject<StreamData<GazePointData>>();
+            var subject = new Subject<StreamData<GazePointData>>();
             m_Agent = new TobiiAgentAnalyzer(subject);
             subject.Subscribe(value =>
             {
@@ -61,14 +61,14 @@ namespace UI
 
         private void localVideoCaptureDeviceToolStripMenuItem_Start()
         {
-            VideoCaptureDeviceForm form = new VideoCaptureDeviceForm();
+            var form = new VideoCaptureDeviceForm();
             form.CaptureSize = new System.Drawing.Size(1280, 720);
 
             if (form.ShowDialog(this) == DialogResult.OK)
             {
                 // create video source
                 form.CaptureSize = new System.Drawing.Size(1280, 720);
-                VideoCaptureDevice videoSource = form.VideoDevice;
+                var videoSource = form.VideoDevice;
 
                 // open it
                 OpenVideoSource(videoSource);
@@ -78,14 +78,14 @@ namespace UI
         // Open local video capture device
         private void localVideoCaptureDeviceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            VideoCaptureDeviceForm form = new VideoCaptureDeviceForm();
+            var form = new VideoCaptureDeviceForm();
             form.CaptureSize = new System.Drawing.Size(1280, 720);
 
             if (form.ShowDialog(this) == DialogResult.OK)
             {
                 // create video source
                 form.CaptureSize = new System.Drawing.Size(1280, 720);
-                VideoCaptureDevice videoSource = form.VideoDevice;
+                var videoSource = form.VideoDevice;
 
                 // open it
                 OpenVideoSource(videoSource);
@@ -97,7 +97,7 @@ namespace UI
             Action action = () =>
             {
                 double ratio = OS.GetScalingFactor(Handle);
-                Point gazeLocation = new Point((int)(x / ratio), (int)(y / ratio));
+                var gazeLocation = new Point((int)(x / ratio), (int)(y / ratio));
 
                 var pt = this.videoSourcePlayer.PointToClient(gazeLocation);
                 var normalizeX = pt.X / (float)videoSourcePlayer.Width;
@@ -105,7 +105,7 @@ namespace UI
                 m_Detector.PointX = normalizeX;
                 m_Detector.PointY = normalizeY;
 
-                Button focusedButton = this.DescendentsFromPoint(pt).OfType<Button>().LastOrDefault();
+                var focusedButton = this.DescendentsFromPoint(pt).OfType<Button>().LastOrDefault();
                 if (focusedButton != null)
                 {
                     this.txtStatus.Text = $"clicking {focusedButton.Text}";
@@ -136,14 +136,14 @@ namespace UI
         {
             try
             {
-                string path = string.Concat(ConfigurationManager.AppSettings["SolutionDirectory"], @"\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\temp\");
+                var path = string.Concat(ConfigurationManager.AppSettings["SolutionDirectory"], @"\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\temp\");
                 //var imageStream = Image.FromStream(ms);
                 //imageStream.Save(outStream, ImageFormat.Jpeg);
-                System.Drawing.Image imgSave = System.Drawing.Image.FromStream(ms);
-                Bitmap bmSave = new Bitmap(imgSave);
-                Bitmap bmTemp = new Bitmap(bmSave);
+                var imgSave = System.Drawing.Image.FromStream(ms);
+                var bmSave = new Bitmap(imgSave);
+                var bmTemp = new Bitmap(bmSave);
 
-                Graphics grSave = Graphics.FromImage(bmTemp);
+                var grSave = Graphics.FromImage(bmTemp);
                 grSave.DrawImage(imgSave, 0, 0, imgSave.Width, imgSave.Height);
 
                 bmTemp.Save(path + "\\" + "image" + ".jpeg");
@@ -162,8 +162,8 @@ namespace UI
         {
             if (videoSourcePlayer != null)
             {
-                MemoryStream memoryStream = new MemoryStream();
-                Bitmap varBmp = videoSourcePlayer.GetCurrentVideoFrame();
+                var memoryStream = new MemoryStream();
+                var varBmp = videoSourcePlayer.GetCurrentVideoFrame();
                 varBmp.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
                 varBmp.Dispose();
                 memoryStream.Seek(0L, SeekOrigin.Begin);
@@ -185,7 +185,7 @@ namespace UI
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 // create video source
-                FileVideoSource fileSource = new FileVideoSource(openFileDialog.FileName);
+                var fileSource = new FileVideoSource(openFileDialog.FileName);
                 fileSource.VideoSourceError += FileSource_VideoSourceError;
 
                 // open it
@@ -200,7 +200,7 @@ namespace UI
         // Open JPEG URL
         private void openJPEGURLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            URLForm form = new URLForm();
+            var form = new URLForm();
 
             form.Description = "Enter URL of an updating JPEG from a web camera:";
             form.URLs = new string[]
@@ -211,7 +211,7 @@ namespace UI
             if (form.ShowDialog(this) == DialogResult.OK)
             {
                 // create video source
-                JPEGStream jpegSource = new JPEGStream(form.URL);
+                var jpegSource = new JPEGStream(form.URL);
 
                 // open it
                 OpenVideoSource(jpegSource);
@@ -221,7 +221,7 @@ namespace UI
         // Open MJPEG URL
         private void openMJPEGURLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            URLForm form = new URLForm();
+            var form = new URLForm();
 
             form.Description = "Enter URL of an MJPEG video stream:";
             form.URLs = new string[]
@@ -233,7 +233,7 @@ namespace UI
             if (form.ShowDialog(this) == DialogResult.OK)
             {
                 // create video source
-                MJPEGStream mjpegSource = new MJPEGStream(form.URL);
+                var mjpegSource = new MJPEGStream(form.URL);
 
                 // open it
                 OpenVideoSource(mjpegSource);
@@ -273,7 +273,7 @@ namespace UI
                 videoSourcePlayer.SignalToStop();
 
                 // wait ~ 3 seconds
-                for (int i = 0; i < 30; i++)
+                for (var i = 0; i < 30; i++)
                 {
                     if (!videoSourcePlayer.IsRunning)
                         break;
@@ -292,11 +292,11 @@ namespace UI
         // New frame received by the player
         private void videoSourcePlayer_NewFrame(object sender, ref Bitmap image)
         {
-            DateTime now = DateTime.Now;
-            Graphics g = Graphics.FromImage(image);
+            var now = DateTime.Now;
+            var g = Graphics.FromImage(image);
 
             // paint current time
-            SolidBrush brush = new SolidBrush(Color.Red);
+            var brush = new SolidBrush(Color.Red);
             g.DrawString(now.ToString(), this.Font, brush, new PointF(5, 5));
             brush.Dispose();
 
@@ -306,12 +306,12 @@ namespace UI
         // On timer event - gather statistics
         private void timer_Tick(object sender, EventArgs e)
         {
-            IVideoSource videoSource = videoSourcePlayer.VideoSource;
+            var videoSource = videoSourcePlayer.VideoSource;
 
             if (videoSource != null)
             {
                 // get number of frames since the last timer tick
-                int framesReceived = videoSource.FramesReceived;
+                var framesReceived = videoSource.FramesReceived;
 
                 if (stopWatch == null)
                 {
@@ -355,7 +355,7 @@ namespace UI
 
         private void buttonSettings_Click(object sender, EventArgs e)
         {
-            SettingsForm settings = new SettingsForm(m_Agent.UpdateDelayThreshold);
+            var settings = new SettingsForm(m_Agent.UpdateDelayThreshold);
             settings.ShowDialog();
         }
     }

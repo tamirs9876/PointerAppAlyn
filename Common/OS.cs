@@ -20,22 +20,22 @@ namespace Common
 
         public static float getScalingFactor(IntPtr hwnd)
         {
-            System.Drawing.Graphics g = System.Drawing.Graphics.FromHwnd(hwnd);
-            IntPtr desktop = g.GetHdc();
-            int LogicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
-            int PhysicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
+            var g = System.Drawing.Graphics.FromHwnd(hwnd);
+            var desktop = g.GetHdc();
+            var LogicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
+            var PhysicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
 
-            float ScreenScalingFactor = (float)PhysicalScreenHeight / (float)LogicalScreenHeight;
+            var ScreenScalingFactor = (float)PhysicalScreenHeight / (float)LogicalScreenHeight;
 
             return ScreenScalingFactor; // 1.25 = 125%
         }
 
         public static Size GetNativeResolution(IntPtr? hwnd = null)
         {
-            System.Drawing.Graphics g = System.Drawing.Graphics.FromHwnd(hwnd ?? IntPtr.Zero);
-            IntPtr desktop = g.GetHdc();
-            int height = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
-            int width = GetDeviceCaps(desktop, (int)DeviceCap.HORZRES);
+            var g = System.Drawing.Graphics.FromHwnd(hwnd ?? IntPtr.Zero);
+            var desktop = g.GetHdc();
+            var height = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
+            var width = GetDeviceCaps(desktop, (int)DeviceCap.HORZRES);
 
             return new Size(width, height);
         }
