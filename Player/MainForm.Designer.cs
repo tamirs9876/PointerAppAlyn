@@ -111,7 +111,7 @@ namespace UI
             this.buttonSettings.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonSettings.ForeColor = System.Drawing.Color.Black;
             this.buttonSettings.Location = new System.Drawing.Point(0, 414);
-            this.buttonSettings.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonSettings.Margin = new System.Windows.Forms.Padding(2);
             this.buttonSettings.Name = "buttonSettings";
             this.buttonSettings.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.buttonSettings.Size = new System.Drawing.Size(128, 80);
@@ -119,6 +119,7 @@ namespace UI
             this.buttonSettings.Text = "הגדרות";
             this.buttonSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.buttonSettings.UseVisualStyleBackColor = false;
+            this.buttonSettings.Visible = false;
             this.buttonSettings.Click += new System.EventHandler(this.buttonSettings_Click);
             // 
             // buttonStopTobii
@@ -225,7 +226,7 @@ namespace UI
             this.videoSourcePlayer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.videoSourcePlayer.ForeColor = System.Drawing.Color.White;
             this.videoSourcePlayer.Location = new System.Drawing.Point(0, 0);
-            this.videoSourcePlayer.Margin = new System.Windows.Forms.Padding(15, 15, 15, 15);
+            this.videoSourcePlayer.Margin = new System.Windows.Forms.Padding(15);
             this.videoSourcePlayer.Name = "videoSourcePlayer";
             this.videoSourcePlayer.Size = new System.Drawing.Size(1916, 920);
             this.videoSourcePlayer.TabIndex = 0;
