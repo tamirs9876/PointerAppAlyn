@@ -1,9 +1,4 @@
-﻿using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using YoloPipe.Harness;
+﻿using YoloPipe.Harness;
 
 namespace UI
 {

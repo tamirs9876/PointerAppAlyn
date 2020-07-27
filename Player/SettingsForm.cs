@@ -7,17 +7,7 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using System.Diagnostics;
-
-using AForge.Video;
-using AForge.Video.DirectShow;
-using Player.Properties;
 
 namespace UI
 {
