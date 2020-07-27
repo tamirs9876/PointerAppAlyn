@@ -1,4 +1,4 @@
-﻿namespace UI
+﻿namespace Alyn.Pointer.App
 {
     partial class UrlForm
     {

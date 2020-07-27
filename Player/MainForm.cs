@@ -11,29 +11,29 @@ using System.Drawing;
 using System.Windows.Forms;
 using AForge.Video;
 using AForge.Video.DirectShow;
-using TobiiAgent;
-using Tobii.Interaction;
 using System.IO;
-using Common;
-using System.Linq;
 using System.Configuration;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
-using Size = System.Windows.Size;
+using Alyn.Pointer.Common;
+using Alyn.Pointer.ObjectDetector;
+using Alyn.Pointer.TobiiAgent;
+using Tobii.Interaction;
 
-namespace UI
+namespace Alyn.Pointer.App
 {
     public partial class MainForm : Form
     {
-        private readonly ObjectDetector detector;
+        private readonly Detector detector;
         private IAgentAnalyzer agent;
 
         public MainForm()
         {
             InitializeComponent();
 
-            detector = new ObjectDetector();
+            detector = new Detector();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

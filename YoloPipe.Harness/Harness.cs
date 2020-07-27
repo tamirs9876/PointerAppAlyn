@@ -2,7 +2,7 @@
 using System.Configuration;
 using System.Threading.Tasks;
 
-namespace YoloPipe.Harness
+namespace Alyn.Pointer.YoloPipe.Harness
 {
     public static class Harness
     {

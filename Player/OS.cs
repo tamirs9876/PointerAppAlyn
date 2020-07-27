@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace UI
+namespace Alyn.Pointer.App
 {
     class OS
     {

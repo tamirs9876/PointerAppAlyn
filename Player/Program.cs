@@ -1,8 +1,7 @@
-﻿using UI;
-using System;
+﻿using System;
 using System.Windows.Forms;
 
-namespace Manager
+namespace Alyn.Pointer.App
 {
     public static class Program
     {

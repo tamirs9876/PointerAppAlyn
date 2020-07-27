@@ -8,7 +8,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace UI
+namespace Alyn.Pointer.App
 {
     public partial class UrlForm : Form
     {

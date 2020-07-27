@@ -1,8 +1,8 @@
-﻿using YoloPipe.Harness;
+﻿using Alyn.Pointer.YoloPipe.Harness;
 
-namespace UI
+namespace Alyn.Pointer.ObjectDetector
 {
-    public class ObjectDetector
+    public class Detector
     {
         public float PointX { get; set; }
         public float PointY { get; set; }

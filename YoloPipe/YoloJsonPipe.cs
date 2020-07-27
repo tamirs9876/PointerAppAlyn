@@ -2,7 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YoloPipe
+namespace Alyn.Pointer.YoloPipe
 {
     public class YoloJsonPipe
     {

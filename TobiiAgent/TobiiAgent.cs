@@ -2,7 +2,7 @@
 using Tobii.Interaction;
 using Tobii.Interaction.Framework;
 
-namespace TobiiAgent
+namespace Alyn.Pointer.TobiiAgent
 {
     public class TobiiAgentAnalyzer : IAgentAnalyzer
     {

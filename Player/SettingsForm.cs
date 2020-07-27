@@ -9,7 +9,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace UI
+namespace Alyn.Pointer.App
 {
     public partial class SettingsForm : Form
     {
@@ -49,9 +49,9 @@ namespace UI
             // soundAlertsCheckBox
             // 
             this.soundAlertsCheckBox.AutoSize = true;
-            this.soundAlertsCheckBox.Checked = global::Player.Properties.Settings.Default.SoundAlerts;
+            this.soundAlertsCheckBox.Checked = global::Alyn.Pointer.App.Properties.Settings.Default.SoundAlerts;
             this.soundAlertsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.soundAlertsCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Player.Properties.Settings.Default, "SoundAlerts", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.soundAlertsCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Alyn.Pointer.App.Properties.Settings.Default, "SoundAlerts", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.soundAlertsCheckBox.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.soundAlertsCheckBox.Location = new System.Drawing.Point(206, 23);
             this.soundAlertsCheckBox.Name = "soundAlertsCheckBox";
@@ -81,7 +81,7 @@ namespace UI
             // gazeDelayUpDown
             // 
             this.gazeDelayUpDown.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.gazeDelayUpDown.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::Player.Properties.Settings.Default, "gazeDelay", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.gazeDelayUpDown.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::Alyn.Pointer.App.Properties.Settings.Default, "gazeDelay", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gazeDelayUpDown.DecimalPlaces = 1;
             this.gazeDelayUpDown.Font = new System.Drawing.Font("Arial Rounded MT Bold", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gazeDelayUpDown.Increment = new decimal(new int[] {
@@ -94,7 +94,7 @@ namespace UI
             this.gazeDelayUpDown.Name = "gazeDelayUpDown";
             this.gazeDelayUpDown.Size = new System.Drawing.Size(120, 40);
             this.gazeDelayUpDown.TabIndex = 3;
-            this.gazeDelayUpDown.Value = global::Player.Properties.Settings.Default.gazeDelay;
+            this.gazeDelayUpDown.Value = global::Alyn.Pointer.App.Properties.Settings.Default.gazeDelay;
             // 
             // gazeDelay
             // 

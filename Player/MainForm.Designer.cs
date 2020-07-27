@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace UI
+﻿namespace Alyn.Pointer.App
 {
     partial class MainForm
     {
@@ -128,7 +126,7 @@ namespace UI
             // 
             this.buttonStopTobii.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.buttonStopTobii.BackColor = System.Drawing.Color.White;
-            this.buttonStopTobii.BackgroundImage = global::Player.Properties.Resources.stop;
+            this.buttonStopTobii.BackgroundImage = global::Alyn.Pointer.App.Properties.Resources.stop;
             this.buttonStopTobii.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonStopTobii.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonStopTobii.Font = new System.Drawing.Font("Segoe UI Semibold", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -149,7 +147,7 @@ namespace UI
             this.buttonTakeMeThere.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonTakeMeThere.AutoSize = true;
             this.buttonTakeMeThere.BackColor = System.Drawing.Color.White;
-            this.buttonTakeMeThere.BackgroundImage = global::Player.Properties.Resources.go;
+            this.buttonTakeMeThere.BackgroundImage = global::Alyn.Pointer.App.Properties.Resources.go;
             this.buttonTakeMeThere.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonTakeMeThere.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonTakeMeThere.Font = new System.Drawing.Font("Segoe UI Semibold", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -168,7 +166,7 @@ namespace UI
             // 
             this.buttonWhoIsThis.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonWhoIsThis.BackColor = System.Drawing.Color.White;
-            this.buttonWhoIsThis.BackgroundImage = global::Player.Properties.Resources.who;
+            this.buttonWhoIsThis.BackgroundImage = global::Alyn.Pointer.App.Properties.Resources.who;
             this.buttonWhoIsThis.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonWhoIsThis.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonWhoIsThis.Font = new System.Drawing.Font("Segoe UI Semibold", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -187,7 +185,7 @@ namespace UI
             // 
             this.buttonWantThis.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonWantThis.BackColor = System.Drawing.Color.White;
-            this.buttonWantThis.BackgroundImage = global::Player.Properties.Resources.get;
+            this.buttonWantThis.BackgroundImage = global::Alyn.Pointer.App.Properties.Resources.get;
             this.buttonWantThis.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonWantThis.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonWantThis.Font = new System.Drawing.Font("Segoe UI Semibold", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -205,7 +203,7 @@ namespace UI
             // buttonIWhatsThis
             // 
             this.buttonIWhatsThis.BackColor = System.Drawing.Color.White;
-            this.buttonIWhatsThis.BackgroundImage = global::Player.Properties.Resources.what;
+            this.buttonIWhatsThis.BackgroundImage = global::Alyn.Pointer.App.Properties.Resources.what;
             this.buttonIWhatsThis.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonIWhatsThis.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonIWhatsThis.Font = new System.Drawing.Font("Segoe UI Semibold", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

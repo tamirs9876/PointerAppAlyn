@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TobiiAgent
+namespace Alyn.Pointer.TobiiAgent
 {
     public interface IAgentAnalyzer
     {

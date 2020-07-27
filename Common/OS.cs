@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace Common
+namespace Alyn.Pointer.Common
 {
     public class OS
     {

@@ -1,8 +1,8 @@
-﻿using Common;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Alyn.Pointer.Common;
 
-namespace TobiiAgent
+namespace Alyn.Pointer.TobiiAgent
 {
     public class MockAgentAnalyzer : IAgentAnalyzer
     {

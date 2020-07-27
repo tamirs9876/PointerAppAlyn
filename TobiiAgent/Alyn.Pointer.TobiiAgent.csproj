@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{9C8933A3-2CAA-477B-A08B-41507683CFE7}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>TobiiAgent</RootNamespace>
-    <AssemblyName>TobiiAgent</AssemblyName>
+    <RootNamespace>Alyn.Pointer.TobiiAgent</RootNamespace>
+    <AssemblyName>Alyn.Pointer.TobiiAgent</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -81,15 +81,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
+    <ProjectReference Include="..\Common\Alyn.Pointer.Common.csproj">
       <Project>{462b50fc-50ba-4738-869e-dc6234fbd510}</Project>
-      <Name>Common</Name>
+      <Name>Alyn.Pointer.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ObjectDetector\ObjectDetector.csproj">
+    <ProjectReference Include="..\ObjectDetector\Alyn.Pointer.ObjectDetector.csproj">
       <Project>{2522fe11-39c4-4981-a328-f5fe06fde235}</Project>
-      <Name>ObjectDetector</Name>
+      <Name>Alyn.Pointer.ObjectDetector</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
