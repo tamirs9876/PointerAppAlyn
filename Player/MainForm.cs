@@ -47,8 +47,8 @@ namespace UI
         private void MainForm_Load(object sender, System.EventArgs e)
         {
             localVideoCaptureDeviceToolStripMenuItem_Start();
-            m_Agent = new TobiiAgentAnalyzer(new Host());
-            //m_Agent = new MockAgentAnalyzer();
+            //m_Agent = new TobiiAgentAnalyzer(new Host());
+            m_Agent = new MockAgentAnalyzer();
             m_Agent.StartWatching(this.onDetection);
         }
 
@@ -124,7 +124,7 @@ namespace UI
 
             MemoryStream frame_MS = CaptureSnapshot();
             saveImageLocally(frame_MS);
-            tryToDetect(frame_MS);
+            //tryToDetect(frame_MS);
         }
 
         internal void saveImageLocally(MemoryStream ms)
