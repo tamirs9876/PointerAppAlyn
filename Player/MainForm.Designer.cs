@@ -34,6 +34,7 @@
             this.capture1stDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mainPanel = new System.Windows.Forms.Panel();
+            this.txtStatus = new System.Windows.Forms.TextBox();
             this.panelDetectionFrame = new System.Windows.Forms.Panel();
             this.buttonSettings = new System.Windows.Forms.Button();
             this.buttonStopTobii = new System.Windows.Forms.Button();
@@ -43,7 +44,6 @@
             this.buttonIWhatsThis = new System.Windows.Forms.Button();
             this.videoSourcePlayer = new AForge.Controls.VideoSourcePlayer();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.txtStatus = new System.Windows.Forms.TextBox();
             this.mainPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -91,6 +91,13 @@
             this.mainPanel.Name = "mainPanel";
             this.mainPanel.Size = new System.Drawing.Size(1916, 920);
             this.mainPanel.TabIndex = 2;
+            // 
+            // txtStatus
+            // 
+            this.txtStatus.Location = new System.Drawing.Point(687, 882);
+            this.txtStatus.Name = "txtStatus";
+            this.txtStatus.Size = new System.Drawing.Size(386, 26);
+            this.txtStatus.TabIndex = 11;
             // 
             // panelDetectionFrame
             // 
@@ -237,13 +244,6 @@
             // 
             this.openFileDialog.Filter = "AVI files (*.avi)|*.avi|All files (*.*)|*.*";
             this.openFileDialog.Title = "Opem movie";
-            // 
-            // txtStatus
-            // 
-            this.txtStatus.Location = new System.Drawing.Point(687, 882);
-            this.txtStatus.Name = "txtStatus";
-            this.txtStatus.Size = new System.Drawing.Size(386, 26);
-            this.txtStatus.TabIndex = 11;
             // 
             // MainForm
             // 

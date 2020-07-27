@@ -11,7 +11,6 @@ namespace Alyn.Pointer.YoloPipe
         public YoloJsonPipe(string exe, string arguments, string workingFolder)
         {
             _pipe = new YoloPipe(exe, arguments, workingFolder);
-
         }
 
         public void Start()

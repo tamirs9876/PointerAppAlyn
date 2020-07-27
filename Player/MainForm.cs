@@ -15,12 +15,12 @@ using System.IO;
 using System.Configuration;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using Alyn.Pointer.Common;
 using Alyn.Pointer.ObjectDetector;
 using Alyn.Pointer.TobiiAgent;
-using Tobii.Interaction;
 
 namespace Alyn.Pointer.App
 {
@@ -28,6 +28,7 @@ namespace Alyn.Pointer.App
     {
         private readonly Detector detector;
         private IAgentAnalyzer agent;
+        private bool mockTobii = true;
 
         public MainForm()
         {
@@ -40,26 +41,32 @@ namespace Alyn.Pointer.App
             CloseCurrentVideoSource();
         }
 
-        private void MainForm_Load(object sender, System.EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
-            localVideoCaptureDeviceToolStripMenuItem_Start();
-            var subject = new Subject<StreamData<GazePointData>>();
-            agent = new TobiiAgentAnalyzer();
-            subject.Subscribe(value =>
+            LocalVideoCaptureDeviceToolStripMenuItem_Start();
+
+            if (mockTobii)
             {
-                OnDetection(value.Data.X, value.Data.Y);
-            });
-            //m_Agent = new MockAgentAnalyzer();
+                var subject = new Subject<(double x, double y)>();
+                this.videoSourcePlayer.MouseClick += (_, args) =>
+                {
+                    if (args.Button == MouseButtons.Left)
+                    {
+                        subject.OnNext((args.X, args.Y));
+                    }
+                };
+
+                agent = new MockAgentAnalyzer(subject);
+            }
+            else
+            {
+                agent = new TobiiAgentAnalyzer();
+            }
+
             agent.StartWatching(this.OnDetection);
         }
 
-        // "Exit" menu item clicked
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void localVideoCaptureDeviceToolStripMenuItem_Start()
+        private void LocalVideoCaptureDeviceToolStripMenuItem_Start()
         {
             var form = new VideoCaptureDeviceForm
             {
@@ -69,7 +76,7 @@ namespace Alyn.Pointer.App
             if (form.ShowDialog(this) == DialogResult.OK)
             {
                 // create video source
-                form.CaptureSize = new System.Drawing.Size(1280, 720);
+                form.CaptureSize = new Size(1280, 720);
                 var videoSource = form.VideoDevice;
 
                 // open it
@@ -81,7 +88,7 @@ namespace Alyn.Pointer.App
         {
             Action action = () =>
             {
-                double ratio = OS.GetScalingFactor(Handle);
+                var ratio = mockTobii ? 1d : OS.GetScalingFactor(Handle);
                 var gazeLocation = new Point((int)(x / ratio), (int)(y / ratio));
 
                 var pt = this.videoSourcePlayer.PointToClient(gazeLocation);
@@ -156,7 +163,7 @@ namespace Alyn.Pointer.App
             detector.DetectFromImagePath();
             // m_Detector.Detect(i_MS);
         }
-        
+
         // Open video source
         private void OpenVideoSource(IVideoSource source)
         {
@@ -206,14 +213,14 @@ namespace Alyn.Pointer.App
         private void videoSourcePlayer_NewFrame(object sender, ref Bitmap image)
         {
             var now = DateTime.Now;
-            var g = Graphics.FromImage(image);
-
-            // paint current time
-            var brush = new SolidBrush(Color.Red);
-            g.DrawString(now.ToString("O"), this.Font, brush, new PointF(5, 5));
-            brush.Dispose();
-
-            g.Dispose();
+            using (var g = Graphics.FromImage(image))
+            {
+                // paint current time
+                using (var brush = new SolidBrush(Color.Red))
+                {
+                    g.DrawString(now.ToString("O"), this.Font, brush, new PointF(10, this.Height / 2));
+                }
+            }
         }
 
         private void buttonTakeMeThere_Click(object sender, EventArgs e)

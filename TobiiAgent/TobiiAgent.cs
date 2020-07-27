@@ -39,9 +39,7 @@ namespace Alyn.Pointer.TobiiAgent
                 switch (fixation.Data.EventType)
                 {
                     case FixationDataEventType.Begin:
-                        //if (!m_FixationBeginWithoutEnd)
-                        //{
-                        // reset the fixationBeginTime if the X,Y IoU is outside range
+                        // reset the fixationBeginTime if the X,Y is outside range
                         var diffX = Math.Abs(lastX - fixation.Data.X);
                         var diffY = Math.Abs(lastY - fixation.Data.Y);
                         if (diffX > 50 || diffY > 50)
@@ -50,15 +48,12 @@ namespace Alyn.Pointer.TobiiAgent
                             lastX = fixation.Data.X;
                             lastY = fixation.Data.Y;
                         }
-                        //    m_FixationBeginWithoutEnd = true;
-                        //}
                         break;
 
                     case FixationDataEventType.Data:
                         var duration = (fixation.Data.Timestamp - fixationBeginTime) / 1000;
                         if (!sentForRecognition && duration >= fixationThreshold)
                         {
-                            //m_FixationBeginWithoutEnd = false;
                             this.host.DisableConnection();
                             recognizeMethod.Invoke(fixationPointX, fixationPointY);
                             this.host.EnableConnection();
@@ -67,7 +62,6 @@ namespace Alyn.Pointer.TobiiAgent
                         break;
 
                     case FixationDataEventType.End:
-                        //m_FixationBeginWithoutEnd = false;
                         sentForRecognition = false;
                         break;
 
