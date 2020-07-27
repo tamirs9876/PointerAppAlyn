@@ -8,24 +8,21 @@ namespace TobiiAgent
     {
         public async void StartWatching(Action<double, double> recognizeMethod)
         {
-            var r = new Random();
+            var random = new Random((int)DateTime.Now.Ticks);
             var size = OS.GetNativeResolution();
             while (true)
             {
-                if (r.NextDouble() < 0.2)
+                if (random.NextDouble() < 0.2)
                 {
-                    var x = r.Next(0, size.Width);
-                    var y = r.Next(0, size.Height);
+                    var x = random.Next(0, size.Width);
+                    var y = random.Next(0, size.Height);
                     recognizeMethod(x, y);
                 }
 
-                await Task.Delay(700);
+                await Task.Delay(random.Next(1500, 5000));
             }
         }
 
-        public void UpdateDelayThreshold(double delay)
-        {
-            throw new NotImplementedException();
-        }
+        public void UpdateDelayThreshold(double _) { }
     }
 }

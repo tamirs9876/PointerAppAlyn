@@ -11,7 +11,7 @@ namespace TobiiAgent
         private double fixationThreshold = 1.5; // Threshold for the kids gaze time before sending the object to the manager for recognition.
         private bool sentForRecognition;
 
-        public TobiiAgentAnalyzer(IObserver<StreamData<GazePointData>> gazeObservable = null)
+        public TobiiAgentAnalyzer()
         {
             this.sentForRecognition = false;
             this.host = new Host();
