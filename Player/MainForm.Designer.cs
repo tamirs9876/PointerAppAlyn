@@ -34,7 +34,6 @@
             this.capture1stDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mainPanel = new System.Windows.Forms.Panel();
-            this.txtStatus = new System.Windows.Forms.TextBox();
             this.panelDetectionFrame = new System.Windows.Forms.Panel();
             this.buttonSettings = new System.Windows.Forms.Button();
             this.buttonStopTobii = new System.Windows.Forms.Button();
@@ -76,7 +75,6 @@
             // 
             this.mainPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.mainPanel.BackColor = System.Drawing.SystemColors.Info;
-            this.mainPanel.Controls.Add(this.txtStatus);
             this.mainPanel.Controls.Add(this.panelDetectionFrame);
             this.mainPanel.Controls.Add(this.buttonSettings);
             this.mainPanel.Controls.Add(this.buttonStopTobii);
@@ -91,13 +89,6 @@
             this.mainPanel.Name = "mainPanel";
             this.mainPanel.Size = new System.Drawing.Size(1916, 920);
             this.mainPanel.TabIndex = 2;
-            // 
-            // txtStatus
-            // 
-            this.txtStatus.Location = new System.Drawing.Point(687, 882);
-            this.txtStatus.Name = "txtStatus";
-            this.txtStatus.Size = new System.Drawing.Size(386, 26);
-            this.txtStatus.TabIndex = 11;
             // 
             // panelDetectionFrame
             // 
@@ -283,6 +274,5 @@
         private System.Windows.Forms.Button buttonStopTobii;
         private System.Windows.Forms.Panel panelDetectionFrame;
         private System.Windows.Forms.Button buttonSettings;
-        private System.Windows.Forms.TextBox txtStatus;
     }
 }

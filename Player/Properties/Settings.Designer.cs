@@ -46,5 +46,17 @@ namespace Alyn.Pointer.App.Properties {
                 this["gazeDelay"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool TobiiMock {
+            get {
+                return ((bool)(this["TobiiMock"]));
+            }
+            set {
+                this["TobiiMock"] = value;
+            }
+        }
     }
 }

@@ -13,11 +13,13 @@ using AForge.Video;
 using AForge.Video.DirectShow;
 using System.IO;
 using System.Configuration;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Linq;
-using System.Reactive.Linq;
+using System.Media;
 using System.Reactive.Subjects;
 using System.Threading;
+using Alyn.Pointer.App.Properties;
 using Alyn.Pointer.Common;
 using Alyn.Pointer.ObjectDetector;
 using Alyn.Pointer.TobiiAgent;
@@ -28,7 +30,8 @@ namespace Alyn.Pointer.App
     {
         private readonly Detector detector;
         private IAgentAnalyzer agent;
-        private bool mockTobii = true;
+        private bool mockTobii = Settings.Default.TobiiMock;
+        private (DateTime timestamp, int x, int y) lastLock;
 
         public MainForm()
         {
@@ -86,42 +89,41 @@ namespace Alyn.Pointer.App
 
         internal void OnDetection(double x, double y)
         {
-            Action action = () =>
+            void Action()
             {
                 var ratio = mockTobii ? 1d : OS.GetScalingFactor(Handle);
-                var gazeLocation = new Point((int)(x / ratio), (int)(y / ratio));
+                var gazeLockLocation = new Point(Math.Max((int)(x / ratio), 0), Math.Max((int)(y / ratio), 0));
 
-                var pt = this.videoSourcePlayer.PointToClient(gazeLocation);
-                var normalizeX = pt.X / (float)videoSourcePlayer.Width;
-                var normalizeY = pt.Y / (float)videoSourcePlayer.Height;
+                Trace.WriteLine($"Alyn:: {gazeLockLocation.X} {gazeLockLocation.Y}");
+
+                var point = this.videoSourcePlayer.PointToClient(gazeLockLocation);
+                var normalizeX = point.X / (float)videoSourcePlayer.Width;
+                var normalizeY = point.Y / (float)videoSourcePlayer.Height;
                 detector.PointX = normalizeX;
                 detector.PointY = normalizeY;
 
-                var focusedButton = this.DescendentsFromPoint(pt).OfType<Button>().LastOrDefault();
-                if (focusedButton != null)
+                this.DescendentsFromPoint(point).OfType<Button>().LastOrDefault()?.PerformClick();
+
+                if (Bounds.Contains(point))
                 {
-                    this.txtStatus.Text = $"clicking {focusedButton.Text}";
-                    focusedButton.PerformClick();
-                }
-                if (Bounds.Contains(pt))
-                {
-                    panelDetectionFrame.Location = gazeLocation;
+                    this.lastLock = (DateTime.Now, gazeLockLocation.X, gazeLockLocation.Y);
+                    panelDetectionFrame.Location = gazeLockLocation;
                     panelDetectionFrame.Visible = true;
                 }
                 else
                 {
                     panelDetectionFrame.Visible = false;
                 }
-            };
+            }
 
             if (!this.IsDisposed)
             {
-                this.Invoke(action);
+                this.Invoke((Action)Action);
+                using (var frame = CaptureSnapshot())
+                {
+                    //TryToDetect(frame);
+                }
             }
-
-            //MemoryStream frame_MS = CaptureSnapshot();
-            //saveImageLocally(frame_MS);
-            //tryToDetect(frame_MS);
         }
 
         internal void SaveImageLocally(MemoryStream ms)
@@ -148,13 +150,14 @@ namespace Alyn.Pointer.App
             if (videoSourcePlayer != null)
             {
                 var memoryStream = new MemoryStream();
-                var varBmp = videoSourcePlayer.GetCurrentVideoFrame();
-                varBmp.Save(memoryStream, ImageFormat.Jpeg);
-                varBmp.Dispose();
+                using (var varBmp = videoSourcePlayer.GetCurrentVideoFrame())
+                {
+                    varBmp.Save(memoryStream, ImageFormat.Jpeg);
+                }
                 memoryStream.Seek(0L, SeekOrigin.Begin);
                 return memoryStream;
-                //varBmp.Save(@"C:\a.png", ImageFormat.Png);
             }
+
             return null;
         }
 
@@ -220,39 +223,39 @@ namespace Alyn.Pointer.App
                 {
                     g.DrawString(now.ToString("O"), this.Font, brush, new PointF(10, this.Height / 2));
                 }
+
+                if (DateTime.Now - this.lastLock.timestamp < TimeSpan.FromSeconds(5))
+                {
+                    const int CircleRadius = 15;
+
+                    var rect = new Rectangle(this.lastLock.x - CircleRadius, this.lastLock.y - CircleRadius, CircleRadius * 2, CircleRadius * 2);
+                    g.DrawEllipse(Pens.Red, rect);
+                }
             }
         }
 
-        private void buttonTakeMeThere_Click(object sender, EventArgs e)
-        {
-            //var simpleSound = new SoundPlayer(@"c:\Windows\Media\chimes.wav");
-            //simpleSound.Play();
-        }
+        private void buttonTakeMeThere_Click(object sender, EventArgs e) => PlaySound("there.wav");
 
-        private void buttonStopTobii_Click(object sender, EventArgs e)
-        {
+        private void buttonStopTobii_Click(object sender, EventArgs e) => PlaySound("stop.wav");
 
-        }
+        private void buttonIWhatsThis_Click(object sender, EventArgs e) => PlaySound("what_is_this.wav");
 
-        private void buttonIWhatsThis_Click(object sender, EventArgs e)
-        {
+        private void buttonWantThis_Click(object sender, EventArgs e) => PlaySound("want.wav");
 
-        }
-
-        private void buttonWantThis_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void buttonWhoIsThis_Click(object sender, EventArgs e)
-        {
-
-        }
+        private void buttonWhoIsThis_Click(object sender, EventArgs e) => PlaySound("who_is_this.wav");
 
         private void buttonSettings_Click(object sender, EventArgs e)
         {
             var settings = new SettingsForm(agent.UpdateDelayThreshold);
             settings.ShowDialog();
+        }
+
+        private static void PlaySound(string fileName)
+        {
+            using (var simpleSound = new SoundPlayer(Path.Combine("Sounds", fileName)))
+            {
+                simpleSound.Play();
+            }
         }
     }
 }

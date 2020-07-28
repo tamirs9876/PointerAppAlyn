@@ -55,7 +55,7 @@ namespace Alyn.Pointer.TobiiAgent
                         if (!sentForRecognition && duration >= fixationThreshold)
                         {
                             this.host.DisableConnection();
-                            recognizeMethod.Invoke(fixationPointX, fixationPointY);
+                            recognizeMethod.Invoke(fixation.Data.X, fixation.Data.Y);
                             this.host.EnableConnection();
                             sentForRecognition = true;
                         }
