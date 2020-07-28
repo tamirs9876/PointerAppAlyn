@@ -1,45 +1,57 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Common
+namespace Alyn.Pointer.Common
 {
     public class OS
     {
+        /// <summary>
+        /// Returns device-specific capabilities information
+        /// </summary>
+        /// <remarks>See more at http://pinvoke.net/default.aspx/gdi32/GetDeviceCaps.html</remarks>
+        /// <param name="hdc"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
         [DllImport("gdi32.dll")]
-        static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
+        static extern int GetDeviceCaps(IntPtr hdc, int index);
+
         public enum DeviceCap
         {
-            VERTRES = 10,
+            /// <summary>
+            /// Horizontal width in pixels
+            /// </summary>
             HORZRES = 8,
-            DESKTOPVERTRES = 117,
 
-            // http://pinvoke.net/default.aspx/gdi32/GetDeviceCaps.html
+            /// <summary>
+            /// Height, in raster lines, of the screen
+            /// </summary>
+            VERTRES = 10,
+
+            /// <summary>
+            /// Vertical height of entire desktop in pixels
+            /// </summary>
+            DESKTOPVERTRES = 117
         }
 
-
-        public static float getScalingFactor(IntPtr hwnd)
+        public static float GetScalingFactor(IntPtr windowHandle)
         {
-            System.Drawing.Graphics g = System.Drawing.Graphics.FromHwnd(hwnd);
-            IntPtr desktop = g.GetHdc();
-            int LogicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
-            int PhysicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
+            var window = Graphics.FromHwnd(windowHandle);
+            var deviceContext = window.GetHdc();
+            var logicalScreenHeight = GetDeviceCaps(deviceContext, (int)DeviceCap.VERTRES);
+            var physicalScreenHeight = GetDeviceCaps(deviceContext, (int)DeviceCap.DESKTOPVERTRES);
 
-            float ScreenScalingFactor = (float)PhysicalScreenHeight / (float)LogicalScreenHeight;
+            var screenScalingFactor = (float)physicalScreenHeight / (float)logicalScreenHeight;
 
-            return ScreenScalingFactor; // 1.25 = 125%
+            return screenScalingFactor; // 1.25 = 125%
         }
 
-        public static Size GetNativeResolution(IntPtr? hwnd = null)
+        public static Size GetNativeResolution(IntPtr? windowHandle = null)
         {
-            System.Drawing.Graphics g = System.Drawing.Graphics.FromHwnd(hwnd ?? IntPtr.Zero);
-            IntPtr desktop = g.GetHdc();
-            int height = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
-            int width = GetDeviceCaps(desktop, (int)DeviceCap.HORZRES);
+            var window = Graphics.FromHwnd(windowHandle ?? IntPtr.Zero);
+            var deviceContext = window.GetHdc();
+            var height = GetDeviceCaps(deviceContext, (int)DeviceCap.VERTRES);
+            var width = GetDeviceCaps(deviceContext, (int)DeviceCap.HORZRES);
 
             return new Size(width, height);
         }

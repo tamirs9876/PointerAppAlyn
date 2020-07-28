@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace UI
+﻿namespace Alyn.Pointer.App
 {
     partial class SettingsForm
     {

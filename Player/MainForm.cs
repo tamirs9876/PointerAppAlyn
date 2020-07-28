@@ -7,36 +7,36 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using System.Diagnostics;
 using AForge.Video;
 using AForge.Video.DirectShow;
-using TobiiAgent;
-using UI;
-using Tobii.Interaction;
 using System.IO;
-using Common;
-using System.Linq;
 using System.Configuration;
+using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.Linq;
+using System.Media;
+using System.Reactive.Subjects;
+using System.Threading;
+using Alyn.Pointer.App.Properties;
+using Alyn.Pointer.Common;
+using Alyn.Pointer.ObjectDetector;
+using Alyn.Pointer.TobiiAgent;
 
-namespace UI
+namespace Alyn.Pointer.App
 {
     public partial class MainForm : Form
     {
-        private IAgentAnalyzer m_Agent;
-        private Stopwatch stopWatch = null;
-        ObjectDetector m_Detector;
+        private readonly Detector detector;
+        private IAgentAnalyzer agent;
+        private bool mockTobii = Settings.Default.TobiiMock;
+        private (DateTime timestamp, int x, int y) lastLock;
 
-        // Class constructor//
         public MainForm()
         {
             InitializeComponent();
-            m_Detector = new ObjectDetector();
+            detector = new Detector();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -44,201 +44,127 @@ namespace UI
             CloseCurrentVideoSource();
         }
 
-        private void MainForm_Load(object sender, System.EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
-            localVideoCaptureDeviceToolStripMenuItem_Start();
-            m_Agent = new TobiiAgentAnalyzer(new Host());
-            //m_Agent = new MockAgentAnalyzer();
-            m_Agent.StartWatching(this.onDetection);
-        }
+            LocalVideoCaptureDeviceToolStripMenuItem_Start();
 
-        // "Exit" menu item clicked
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void localVideoCaptureDeviceToolStripMenuItem_Start()
-        {
-            VideoCaptureDeviceForm form = new VideoCaptureDeviceForm();
-            form.CaptureSize = new System.Drawing.Size(1280, 720);
-
-            if (form.ShowDialog(this) == DialogResult.OK)
+            if (mockTobii)
             {
-                // create video source
-                form.CaptureSize = new System.Drawing.Size(1280, 720);
-                VideoCaptureDevice videoSource = form.VideoDevice;
-
-                // open it
-                OpenVideoSource(videoSource);
-            }
-        }
-
-        // Open local video capture device
-        private void localVideoCaptureDeviceToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            VideoCaptureDeviceForm form = new VideoCaptureDeviceForm();
-            form.CaptureSize = new System.Drawing.Size(1280, 720);
-
-            if (form.ShowDialog(this) == DialogResult.OK)
-            {
-                // create video source
-                form.CaptureSize = new System.Drawing.Size(1280, 720);
-                VideoCaptureDevice videoSource = form.VideoDevice;
-
-                // open it
-                OpenVideoSource(videoSource);
-            }
-        }
-
-        internal void onDetection(double x, double y)
-        {
-                Action action = () =>
+                var subject = new Subject<(double x, double y)>();
+                this.videoSourcePlayer.MouseClick += (_, args) =>
                 {
-                    double ratio = OS.GetScalingFactor(Handle);
-                    Point gazeLocation = new Point((int)(x / ratio), (int)(y / ratio));
-
-                    var pt = this.videoSourcePlayer.PointToClient(gazeLocation);
-                    float normalizeX = pt.X / (float)videoSourcePlayer.Width;
-                    float normalizeY = pt.Y / (float)videoSourcePlayer.Height;
-                    m_Detector.PointX = normalizeX;
-                    m_Detector.PointY = normalizeY;
-
-                    Button focusedButton = this.DescendentsFromPoint(pt).OfType<Button>().LastOrDefault();
-                    if (focusedButton != null)
+                    if (args.Button == MouseButtons.Left)
                     {
-                        focusedButton.PerformClick();
-                    }
-                    if (Bounds.Contains(pt))
-                    {
-                        panelDetectionFrame.Location = gazeLocation;
-                        panelDetectionFrame.Visible = true;
-                    }
-                    else
-                    {
-                        panelDetectionFrame.Visible = false;
+                        subject.OnNext((args.X, args.Y));
                     }
                 };
 
-            this.Invoke(action);
+                agent = new MockAgentAnalyzer(subject);
+            }
+            else
+            {
+                agent = new TobiiAgentAnalyzer();
+            }
 
-            MemoryStream frame_MS = CaptureSnapshot();
-            saveImageLocally(frame_MS);
-            tryToDetect(frame_MS);
+            agent.StartWatching(this.OnDetection);
         }
 
-        internal void saveImageLocally(MemoryStream ms)
+        private void LocalVideoCaptureDeviceToolStripMenuItem_Start()
         {
-            try
+            var form = new VideoCaptureDeviceForm
             {
-                string path = string.Concat(ConfigurationManager.AppSettings["SolutionDirectory"], @"\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\temp\");
-                //var imageStream = Image.FromStream(ms);
-                //imageStream.Save(outStream, ImageFormat.Jpeg);
-                System.Drawing.Image imgSave = System.Drawing.Image.FromStream(ms);
-                Bitmap bmSave = new Bitmap(imgSave);
-                Bitmap bmTemp = new Bitmap(bmSave);
+                CaptureSize = new System.Drawing.Size(1280, 720)
+            };
 
-                Graphics grSave = Graphics.FromImage(bmTemp);
-                grSave.DrawImage(imgSave, 0, 0, imgSave.Width, imgSave.Height);
-
-                bmTemp.Save(path + "\\" + "image" + ".jpeg");
-                imgSave.Dispose();
-                bmSave.Dispose();
-                bmTemp.Dispose();
-                grSave.Dispose();
-            }
-            catch (Exception ex)
+            if (form.ShowDialog(this) == DialogResult.OK)
             {
-                
+                // create video source
+                form.CaptureSize = new Size(1280, 720);
+                var videoSource = form.VideoDevice;
+
+                // open it
+                OpenVideoSource(videoSource);
             }
+        }
+
+        internal void OnDetection(double x, double y)
+        {
+            void Action()
+            {
+                var ratio = mockTobii ? 1d : OS.GetScalingFactor(Handle);
+                var gazeLockLocation = new Point(Math.Max((int)(x / ratio), 0), Math.Max((int)(y / ratio), 0));
+
+                Trace.WriteLine($"Alyn:: {gazeLockLocation.X} {gazeLockLocation.Y}");
+
+                var point = this.videoSourcePlayer.PointToClient(gazeLockLocation);
+                var normalizeX = point.X / (float)videoSourcePlayer.Width;
+                var normalizeY = point.Y / (float)videoSourcePlayer.Height;
+                detector.PointX = normalizeX;
+                detector.PointY = normalizeY;
+
+                this.DescendentsFromPoint(point).OfType<Button>().LastOrDefault()?.PerformClick();
+
+                if (Bounds.Contains(point))
+                {
+                    this.lastLock = (DateTime.Now, gazeLockLocation.X, gazeLockLocation.Y);
+                    panelDetectionFrame.Location = gazeLockLocation;
+                    panelDetectionFrame.Visible = true;
+                }
+                else
+                {
+                    panelDetectionFrame.Visible = false;
+                }
+            }
+
+            if (!this.IsDisposed)
+            {
+                this.Invoke((Action)Action);
+                using (var frame = CaptureSnapshot())
+                {
+                    //TryToDetect(frame);
+                }
+            }
+        }
+
+        internal void SaveImageLocally(MemoryStream ms)
+        {
+            var path = string.Concat(ConfigurationManager.AppSettings["SolutionDirectory"], @"\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\temp\");
+            //var imageStream = Image.FromStream(ms);
+            //imageStream.Save(outStream, ImageFormat.Jpeg);
+            var imgSave = Image.FromStream(ms);
+            var bmSave = new Bitmap(imgSave);
+            var bmTemp = new Bitmap(bmSave);
+
+            var grSave = Graphics.FromImage(bmTemp);
+            grSave.DrawImage(imgSave, 0, 0, imgSave.Width, imgSave.Height);
+
+            bmTemp.Save(path + "\\" + "image" + ".jpeg");
+            imgSave.Dispose();
+            bmSave.Dispose();
+            bmTemp.Dispose();
+            grSave.Dispose();
         }
 
         internal MemoryStream CaptureSnapshot()
         {
             if (videoSourcePlayer != null)
             {
-                MemoryStream memoryStream = new MemoryStream();
-                Bitmap varBmp = videoSourcePlayer.GetCurrentVideoFrame();
-                varBmp.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-                varBmp.Dispose();
+                var memoryStream = new MemoryStream();
+                using (var varBmp = videoSourcePlayer.GetCurrentVideoFrame())
+                {
+                    varBmp.Save(memoryStream, ImageFormat.Jpeg);
+                }
                 memoryStream.Seek(0L, SeekOrigin.Begin);
                 return memoryStream;
-                //varBmp.Save(@"C:\a.png", ImageFormat.Png);
             }
+
             return null;
         }
 
-        internal void tryToDetect(MemoryStream i_MS)
+        internal void TryToDetect(MemoryStream stream)
         {
-            m_Detector.DetectFromImagePath();
+            detector.DetectFromImagePath();
             // m_Detector.Detect(i_MS);
-        }
-
-        // Open video file using DirectShow
-        private void openVideofileusingDirectShowToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                // create video source
-                FileVideoSource fileSource = new FileVideoSource(openFileDialog.FileName);
-                fileSource.VideoSourceError += FileSource_VideoSourceError;
-
-                // open it
-                OpenVideoSource(fileSource);
-            }
-        }
-
-        private void FileSource_VideoSourceError(object sender, VideoSourceErrorEventArgs eventArgs)
-        {
-        }
-
-        // Open JPEG URL
-        private void openJPEGURLToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            URLForm form = new URLForm();
-
-            form.Description = "Enter URL of an updating JPEG from a web camera:";
-            form.URLs = new string[]
-                {
-                    "http://195.243.185.195/axis-cgi/jpg/image.cgi?camera=1",
-                };
-
-            if (form.ShowDialog(this) == DialogResult.OK)
-            {
-                // create video source
-                JPEGStream jpegSource = new JPEGStream(form.URL);
-
-                // open it
-                OpenVideoSource(jpegSource);
-            }
-        }
-
-        // Open MJPEG URL
-        private void openMJPEGURLToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            URLForm form = new URLForm();
-
-            form.Description = "Enter URL of an MJPEG video stream:";
-            form.URLs = new string[]
-                {
-                    "http://195.243.185.195/axis-cgi/mjpg/video.cgi?camera=4",
-                    "http://195.243.185.195/axis-cgi/mjpg/video.cgi?camera=3",
-                };
-
-            if (form.ShowDialog(this) == DialogResult.OK)
-            {
-                // create video source
-                MJPEGStream mjpegSource = new MJPEGStream(form.URL);
-
-                // open it
-                OpenVideoSource(mjpegSource);
-            }
-        }
-
-        // Capture 1st display in the system
-        private void capture1stDisplayToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenVideoSource(new ScreenCaptureStream(Screen.AllScreens[0].Bounds, 100));
         }
 
         // Open video source
@@ -254,104 +180,82 @@ namespace UI
             videoSourcePlayer.VideoSource = source;
             videoSourcePlayer.Start();
 
-            // reset stop watch
-            stopWatch = null;
-
             this.Cursor = Cursors.Default;
         }
 
         // Close video source if it is running
         private void CloseCurrentVideoSource()
         {
-            if (videoSourcePlayer.VideoSource != null)
+            if (videoSourcePlayer.VideoSource == null)
             {
-                videoSourcePlayer.SignalToStop();
-
-                // wait ~ 3 seconds
-                for (int i = 0; i < 30; i++)
-                {
-                    if (!videoSourcePlayer.IsRunning)
-                        break;
-                    System.Threading.Thread.Sleep(100);
-                }
-
-                if (videoSourcePlayer.IsRunning)
-                {
-                    videoSourcePlayer.Stop();
-                }
-
-                videoSourcePlayer.VideoSource = null;
+                return;
             }
+
+            videoSourcePlayer.SignalToStop();
+
+            // wait ~3 seconds
+            for (var i = 0; i < 30; i++)
+            {
+                if (!videoSourcePlayer.IsRunning)
+                {
+                    break;
+                }
+
+                Thread.Sleep(100);
+            }
+
+            if (videoSourcePlayer.IsRunning)
+            {
+                videoSourcePlayer.Stop();
+            }
+
+            videoSourcePlayer.VideoSource = null;
         }
 
         // New frame received by the player
         private void videoSourcePlayer_NewFrame(object sender, ref Bitmap image)
         {
-            DateTime now = DateTime.Now;
-            Graphics g = Graphics.FromImage(image);
-
-            // paint current time
-            SolidBrush brush = new SolidBrush(Color.Red);
-            g.DrawString(now.ToString(), this.Font, brush, new PointF(5, 5));
-            brush.Dispose();
-
-            g.Dispose();
-        }
-
-        // On timer event - gather statistics
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            IVideoSource videoSource = videoSourcePlayer.VideoSource;
-
-            if (videoSource != null)
+            var now = DateTime.Now;
+            using (var g = Graphics.FromImage(image))
             {
-                // get number of frames since the last timer tick
-                int framesReceived = videoSource.FramesReceived;
-
-                if (stopWatch == null)
+                // paint current time
+                using (var brush = new SolidBrush(Color.Red))
                 {
-                    stopWatch = new Stopwatch();
-                    stopWatch.Start();
+                    g.DrawString(now.ToString("O"), this.Font, brush, new PointF(10, this.Height / 2));
                 }
-                else
-                {
-                    stopWatch.Stop();
 
-                    stopWatch.Reset();
-                    stopWatch.Start();
+                if (DateTime.Now - this.lastLock.timestamp < TimeSpan.FromSeconds(5))
+                {
+                    const int CircleRadius = 15;
+
+                    var rect = new Rectangle(this.lastLock.x - CircleRadius, this.lastLock.y - CircleRadius, CircleRadius * 2, CircleRadius * 2);
+                    g.DrawEllipse(Pens.Red, rect);
                 }
             }
         }
 
-        private void buttonTakeMeThere_Click(object sender, EventArgs e)
-        {
+        private void buttonTakeMeThere_Click(object sender, EventArgs e) => PlaySound("there.wav");
 
-        }
+        private void buttonStopTobii_Click(object sender, EventArgs e) => PlaySound("stop.wav");
 
-        private void buttonStopTobii_Click(object sender, EventArgs e)
-        {
+        private void buttonIWhatsThis_Click(object sender, EventArgs e) => PlaySound("what_is_this.wav");
 
-        }
+        private void buttonWantThis_Click(object sender, EventArgs e) => PlaySound("want.wav");
 
-        private void buttonIWhatsThis_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void buttonWantThis_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void buttonWhoIsThis_Click(object sender, EventArgs e)
-        {
-
-        }
+        private void buttonWhoIsThis_Click(object sender, EventArgs e) => PlaySound("who_is_this.wav");
 
         private void buttonSettings_Click(object sender, EventArgs e)
         {
-            SettingsForm settings = new SettingsForm(m_Agent.UpdateDelayThreshold);
+            var settings = new SettingsForm(agent.UpdateDelayThreshold);
             settings.ShowDialog();
+        }
+
+        private static void PlaySound(string fileName)
+        {
+            using (var simpleSound = new SoundPlayer(Path.Combine("Sounds", fileName)))
+            {
+                simpleSound.Play();
+            }
         }
     }
 }

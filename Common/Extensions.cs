@@ -1,27 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Common
+namespace Alyn.Pointer.Common
 {
     public static class Extensions
     {
-        public static IEnumerable<Control> DescendentsFromPoint(this Control control, Point pt)
+        public static IEnumerable<Control> DescendentsFromPoint(this Control control, Point point)
         {
-            var ctrl = control.GetChildAtPoint(pt);
+            var ctrl = control.GetChildAtPoint(point);
             if (ctrl != null)
             {
                 yield return ctrl;
 
-                var screenPt = control.PointToScreen(pt);
-                pt = ctrl.PointToScreen(screenPt);
+                var screenPt = control.PointToScreen(point);
+                point = ctrl.PointToScreen(screenPt);
 
-                foreach (var item in DescendentsFromPoint(ctrl, pt))
+                foreach (var item in DescendentsFromPoint(ctrl, point))
                 {
                     yield return item;
                 }

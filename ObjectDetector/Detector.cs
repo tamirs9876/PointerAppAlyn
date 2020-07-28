@@ -1,13 +1,8 @@
-﻿using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using YoloPipe.Harness;
+﻿using Alyn.Pointer.YoloPipe.Harness;
 
-namespace UI
+namespace Alyn.Pointer.ObjectDetector
 {
-    public class ObjectDetector
+    public class Detector
     {
         public float PointX { get; set; }
         public float PointY { get; set; }

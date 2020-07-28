@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace YoloPipe
+namespace Alyn.Pointer.YoloPipe
 {
     public class DataReadyEventArgs : EventArgs
     {

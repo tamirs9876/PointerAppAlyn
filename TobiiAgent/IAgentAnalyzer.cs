@@ -1,10 +1,11 @@
 ﻿using System;
 
-namespace TobiiAgent
+namespace Alyn.Pointer.TobiiAgent
 {
     public interface IAgentAnalyzer
     {
-        void UpdateDelayThreshold(double i_Delay);
-        void StartWatching(Action<double, double> i_RecognizeMethod);
+        void StartWatching(Action<double, double> recognizeMethod);
+
+        void UpdateDelayThreshold(double delay);
     }
 }

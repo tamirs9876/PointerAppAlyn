@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace UI
+﻿namespace Alyn.Pointer.App
 {
     partial class MainForm
     {
@@ -111,7 +109,7 @@ namespace UI
             this.buttonSettings.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonSettings.ForeColor = System.Drawing.Color.Black;
             this.buttonSettings.Location = new System.Drawing.Point(0, 414);
-            this.buttonSettings.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonSettings.Margin = new System.Windows.Forms.Padding(2);
             this.buttonSettings.Name = "buttonSettings";
             this.buttonSettings.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.buttonSettings.Size = new System.Drawing.Size(128, 80);
@@ -119,13 +117,14 @@ namespace UI
             this.buttonSettings.Text = "הגדרות";
             this.buttonSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.buttonSettings.UseVisualStyleBackColor = false;
+            this.buttonSettings.Visible = false;
             this.buttonSettings.Click += new System.EventHandler(this.buttonSettings_Click);
             // 
             // buttonStopTobii
             // 
             this.buttonStopTobii.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.buttonStopTobii.BackColor = System.Drawing.Color.White;
-            this.buttonStopTobii.BackgroundImage = global::Player.Properties.Resources.stop;
+            this.buttonStopTobii.BackgroundImage = global::Alyn.Pointer.App.Properties.Resources.stop;
             this.buttonStopTobii.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonStopTobii.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonStopTobii.Font = new System.Drawing.Font("Segoe UI Semibold", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -146,7 +145,7 @@ namespace UI
             this.buttonTakeMeThere.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonTakeMeThere.AutoSize = true;
             this.buttonTakeMeThere.BackColor = System.Drawing.Color.White;
-            this.buttonTakeMeThere.BackgroundImage = global::Player.Properties.Resources.go;
+            this.buttonTakeMeThere.BackgroundImage = global::Alyn.Pointer.App.Properties.Resources.go;
             this.buttonTakeMeThere.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonTakeMeThere.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonTakeMeThere.Font = new System.Drawing.Font("Segoe UI Semibold", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -165,7 +164,7 @@ namespace UI
             // 
             this.buttonWhoIsThis.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonWhoIsThis.BackColor = System.Drawing.Color.White;
-            this.buttonWhoIsThis.BackgroundImage = global::Player.Properties.Resources.who;
+            this.buttonWhoIsThis.BackgroundImage = global::Alyn.Pointer.App.Properties.Resources.who;
             this.buttonWhoIsThis.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonWhoIsThis.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonWhoIsThis.Font = new System.Drawing.Font("Segoe UI Semibold", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -184,7 +183,7 @@ namespace UI
             // 
             this.buttonWantThis.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonWantThis.BackColor = System.Drawing.Color.White;
-            this.buttonWantThis.BackgroundImage = global::Player.Properties.Resources.get;
+            this.buttonWantThis.BackgroundImage = global::Alyn.Pointer.App.Properties.Resources.get;
             this.buttonWantThis.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonWantThis.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonWantThis.Font = new System.Drawing.Font("Segoe UI Semibold", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -202,7 +201,7 @@ namespace UI
             // buttonIWhatsThis
             // 
             this.buttonIWhatsThis.BackColor = System.Drawing.Color.White;
-            this.buttonIWhatsThis.BackgroundImage = global::Player.Properties.Resources.what;
+            this.buttonIWhatsThis.BackgroundImage = global::Alyn.Pointer.App.Properties.Resources.what;
             this.buttonIWhatsThis.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonIWhatsThis.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonIWhatsThis.Font = new System.Drawing.Font("Segoe UI Semibold", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -225,7 +224,7 @@ namespace UI
             this.videoSourcePlayer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.videoSourcePlayer.ForeColor = System.Drawing.Color.White;
             this.videoSourcePlayer.Location = new System.Drawing.Point(0, 0);
-            this.videoSourcePlayer.Margin = new System.Windows.Forms.Padding(15, 15, 15, 15);
+            this.videoSourcePlayer.Margin = new System.Windows.Forms.Padding(15);
             this.videoSourcePlayer.Name = "videoSourcePlayer";
             this.videoSourcePlayer.Size = new System.Drawing.Size(1916, 920);
             this.videoSourcePlayer.TabIndex = 0;
