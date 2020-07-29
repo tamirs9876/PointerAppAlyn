@@ -1,15 +1,15 @@
 # %%
+from os.path import dirname, abspath, join
+from time import time
 import cv2
 import numpy as np
-import time
 
 # %% Load Yolo
-# net = cv2.dnn.readNet("YOLOv3-Object-Detection-with-OpenCV/profiling/weights/yolov3.weights", "YOLOv3-Object-Detection-with-OpenCV/profiling/cfg/yolov3.cfg")
-net = cv2.dnn.readNetFromDarknet("C:\work\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\profiling\cfg\yolov3.cfg", 
-"C:\work\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\profiling\weights\yolov3.weights")
+root_dir = join(dirname(abspath(__file__)), '..')
+net = cv2.dnn.readNetFromDarknet(join(root_dir, 'profiling', 'cfg', 'yolov3.cfg'), join(root_dir, 'profiling', 'weights', 'yolov3.weights'))
 
 classes = []
-with open("C:\work\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\yolov3-coco\coco-labels", "r") as f:
+with open(join(root_dir, 'yolov3-coco', 'coco-labels'), "r") as f:
     classes = [line.strip() for line in f.readlines()]
 layer_names = net.getLayerNames()
 output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
@@ -20,10 +20,9 @@ colors = np.random.uniform(0, 255, size=(len(classes), 3))
 cap = cv2.VideoCapture(0)
 
 font = cv2.FONT_HERSHEY_PLAIN
-starting_time = time.time()
+starting_time = time()
 frame_id = 0
 
-# _, frame = cap.read()
 while True:
 
     _, frame = cap.read()
@@ -71,23 +70,24 @@ while True:
             color = colors[class_ids[i]]
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
             cv2.rectangle(frame, (x, y), (x + w, y + 30), color, -1)
-            cv2.putText(frame, label + " " + str(round(confidence, 2)), (x, y + 30), font, 3, (255,255,255), 3)
+            cv2.putText(frame, label + " " + str(round(confidence, 2)),
+                        (x, y + 30), font, 3, (255, 255, 255), 3)
 
-    elapsed_time = time.time() - starting_time
+    elapsed_time = time() - starting_time
     fps = frame_id / elapsed_time
 
-    cv2.putText(frame, "FPS: " + str(round(fps, 2)), (10, 50), font, 3, (0, 0, 0), 3)
+    cv2.putText(frame, "FPS: " + str(round(fps, 2)),
+                (10, 50), font, 3, (0, 0, 0), 3)
     cv2.imshow("Image", frame)
 
     print("FPS: " + str(round(fps, 2)))
     print('Total time: ' + str(round(elapsed_time)))
-    
+
     key = cv2.waitKey(1)
     if key == 27:
         break
 
 cap.release()
 cv2.destroyAllWindows()
-
 
 # %%
