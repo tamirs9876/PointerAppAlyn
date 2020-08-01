@@ -10,7 +10,6 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using AForge.Video;
-using AForge.Video.DirectShow;
 using System.IO;
 using System.Configuration;
 using System.Diagnostics;
@@ -19,16 +18,20 @@ using System.Linq;
 using System.Media;
 using System.Reactive.Subjects;
 using System.Threading;
+using System.Threading.Tasks;
+using AForge.Video.DirectShow;
 using Alyn.Pointer.App.Properties;
 using Alyn.Pointer.Common;
-using Alyn.Pointer.ObjectDetector;
+using Alyn.Pointer.DetectionService;
 using Alyn.Pointer.TobiiAgent;
+using Google.Protobuf;
+using Grpc.Core;
+using Grpc.Net.Client;
 
 namespace Alyn.Pointer.App
 {
     public partial class MainForm : Form
     {
-        private readonly Detector detector;
         private IAgentAnalyzer agent;
         private bool mockTobii = Settings.Default.TobiiMock;
         private (DateTime timestamp, int x, int y) lastLock;
@@ -36,7 +39,6 @@ namespace Alyn.Pointer.App
         public MainForm()
         {
             InitializeComponent();
-            detector = new Detector();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -71,9 +73,10 @@ namespace Alyn.Pointer.App
 
         private void LocalVideoCaptureDeviceToolStripMenuItem_Start()
         {
+
             var form = new VideoCaptureDeviceForm
             {
-                CaptureSize = new System.Drawing.Size(1280, 720)
+                CaptureSize = new Size(1280, 720)
             };
 
             if (form.ShowDialog(this) == DialogResult.OK)
@@ -97,10 +100,6 @@ namespace Alyn.Pointer.App
                 Trace.WriteLine($"Alyn:: {gazeLockLocation.X} {gazeLockLocation.Y}");
 
                 var point = this.videoSourcePlayer.PointToClient(gazeLockLocation);
-                var normalizeX = point.X / (float)videoSourcePlayer.Width;
-                var normalizeY = point.Y / (float)videoSourcePlayer.Height;
-                detector.PointX = normalizeX;
-                detector.PointY = normalizeY;
 
                 this.DescendentsFromPoint(point).OfType<Button>().LastOrDefault()?.PerformClick();
 
@@ -119,30 +118,18 @@ namespace Alyn.Pointer.App
             if (!this.IsDisposed)
             {
                 this.Invoke((Action)Action);
-                using (var frame = CaptureSnapshot())
-                {
-                    //TryToDetect(frame);
-                }
+                using var frame = CaptureSnapshot();
+                var result = GetDetections(frame);
             }
         }
 
-        internal void SaveImageLocally(MemoryStream ms)
+        public static async Task<DetectionResult[]> GetDetections(Stream image)
         {
-            var path = string.Concat(ConfigurationManager.AppSettings["SolutionDirectory"], @"\PointerAppAlyn\YOLOv3-Object-Detection-with-OpenCV\temp\");
-            //var imageStream = Image.FromStream(ms);
-            //imageStream.Save(outStream, ImageFormat.Jpeg);
-            var imgSave = Image.FromStream(ms);
-            var bmSave = new Bitmap(imgSave);
-            var bmTemp = new Bitmap(bmSave);
-
-            var grSave = Graphics.FromImage(bmTemp);
-            grSave.DrawImage(imgSave, 0, 0, imgSave.Width, imgSave.Height);
-
-            bmTemp.Save(path + "\\" + "image" + ".jpeg");
-            imgSave.Dispose();
-            bmSave.Dispose();
-            bmTemp.Dispose();
-            grSave.Dispose();
+            var channel = GrpcChannel.ForAddress("https://localhost:5001");
+            var client = new Detection.DetectionClient(channel);
+            var request = new Alyn.Pointer.DetectionService.Payload {Image = ByteString.FromStream(image)};
+            var reply = await client.GetDetectionsAsync(request, new CallOptions());
+            return reply.Detections.ToArray();
         }
 
         internal MemoryStream CaptureSnapshot()
@@ -159,12 +146,6 @@ namespace Alyn.Pointer.App
             }
 
             return null;
-        }
-
-        internal void TryToDetect(MemoryStream stream)
-        {
-            detector.DetectFromImagePath();
-            // m_Detector.Detect(i_MS);
         }
 
         // Open video source
@@ -252,10 +233,8 @@ namespace Alyn.Pointer.App
 
         private static void PlaySound(string fileName)
         {
-            using (var simpleSound = new SoundPlayer(Path.Combine("Sounds", fileName)))
-            {
-                simpleSound.Play();
-            }
+            using var simpleSound = new SoundPlayer(Path.Combine("Sounds", fileName));
+            simpleSound.Play();
         }
     }
 }
