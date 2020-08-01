@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option csharp_namespace = "Alyn.Pointer.DetectionService";
+
+package detect;
+
+// The greeting service definition.
+service Detection {
+  // Sends a greeting
+  rpc GetDetections (Payload) returns (Result);
+}
+
+// The request message containing the user's name.
+message Payload {
+  bytes image = 1;
+}
+
+message Result {
+  repeated DetectionResult Detections = 1;
+}
+
+// The response message containing the greetings.
+message DetectionResult {
+  string Type = 1;
+  int32 X = 2;
+  int32 Y = 3;
+  int32 W = 4;
+  int32 H = 5;
+}
